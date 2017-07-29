@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"  
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+ http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context 
+ http://www.springframework.org/schema/context/spring-context.xsd
+ http://www.springframework.org/schema/tx   
+ http://www.springframework.org/schema/tx/spring-tx.xsd
+ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd  
+ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+        
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+    
+	<context:annotation-config />
+	<context:component-scan base-package="org.march.platform" />                  
+    <!-- this is the data configuration, this XML file is existing in march-persistence -->                        
+	<import resource="classpath:persistence.xml" />
+	
+	<context:annotation-config />
+	<context:component-scan base-package="org.march.platform.*" />
+	
+	<bean id="inMessageInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
+	<bean id="outMessageInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+	<bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
+    <bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+     
+    <bean id="cxf" class="org.apache.cxf.bus.spring.SpringBus">
+        <property name="inInterceptors">
+            <list>
+                <ref bean="logInbound"/>
+            </list>
+        </property>
+        <property name="outInterceptors">
+            <list>
+                <ref bean="logOutbound"/>
+            </list>
+        </property>
+        <property name="outFaultInterceptors">
+            <list>
+                <ref bean="logOutbound"/>
+            </list>
+        </property>
+        <property name="inFaultInterceptors">
+            <list>
+                <ref bean="logInbound"/>
+            </list>
+        </property>
+    </bean>
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="hibernateProperties">
+            <props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+			</props>
+        </property>
+        <property name="packagesToScan">
+           <list>    
+               <value>org.march.platform.entity</value>
+           </list>    
+       </property>     
+    </bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
+	
+	<bean id="demoWebService" class="org.march.platform.webService.DemoWebService"/>
+	
+	<jaxrs:server id="restfulServer" address="/restful">
+		<jaxrs:serviceBeans>
+			<ref bean="demoWebService" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+   			<bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
+		</jaxrs:providers>
+		<jaxrs:extensionMappings>
+			<entry key="json" value="application/json" />
+			<entry key="xml" value="application/xml" />
+		</jaxrs:extensionMappings>
+	</jaxrs:server>
+	
+</beans>

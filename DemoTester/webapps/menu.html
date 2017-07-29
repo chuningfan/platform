@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script src="../lib/jquery.js" ></script>
+</head>
+<body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.buttonA').on('click', function(target) {
+			parent.goToPage(target.currentTarget.id + '.html');
+		});
+	});
+</script>
+	<div id="menu">
+		<div style="border: medium;">
+			✿<a id="saveNewDataTester" class="buttonA" href="#">Save New Data</a>
+		</div>
+		<br/>
+		<br/>
+		<div>
+			✿<a id="getOneOrUpdateTester" class="buttonA" href="#">Get Data By ID Or Update Data</a>
+		</div>
+		<br/>
+		<br/>
+		<div>
+			✿<a id="getAllOrDeleteTester" class="buttonA" href="#">Get Data As List Or Remove Data From Data List</a>
+		</div>
+		<br/>
+		<br/>
+		<div>
+			✿<a id="fileUploadAndDownload" class="buttonA" href="#">Upload Or Delete File</a>
+		</div>
+	</div>
+</body>
+</html>

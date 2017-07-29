@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Home page</title>
+<script src="./lib/jquery.js"></script>
+</head>
+<body bgcolor="#9ACD32">
+	<script type="text/javascript">
+		function goToPage(fileName) {
+			$('#demoContent').attr('src', './webapps/' + fileName);
+			$('#instructionFrame')[0].contentWindow.showInstruction(fileName);
+		}
+	</script>
+	<div style="border-radius:10px; background-color: #DEB887; text-align: center">
+		<h1>Demo Tester</h1>
+		<h3>By Vic.Chu</h3>
+	</div>
+	<div id="menu" style="display: inline-block; border-radius:10px; background-color: #FFB6C1">
+		<iframe src="./webapps/menu.html" frameborder="0" scrolling="no"
+			height="800px" width="200px" noresize="noresize"></iframe>
+	</div>
+	<div id="content" style="display: inline-block; background-color: #F0F8FF;">
+		<iframe id="demoContent" frameborder="0" scrolling="yes" height="800px"
+			width="600px" noresize="noresize"></iframe>
+	</div>
+	<div id="instruction" style="display: inline-block; background-color: #FFFACD; border-radius:10px;">
+		<iframe id="instructionFrame" src="./webapps/instrruction.html" frameborder="0" scrolling="no" height="800px"
+			width="800px" noresize="noresize"></iframe>
+	</div>
+</body>
+</html>

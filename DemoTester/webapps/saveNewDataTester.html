@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../lib/jquery.js" ></script>
+</head>
+<body>
+	<script type="text/javascript">
+		
+		$(document).ready(function(){
+			
+			$("#saveButton").on('click',function(){
+				var name = $("#name").val();
+				var amount = $("#amount").val();
+				var date = $("#createDate").val();
+				
+				var data = {
+						demoName: name,
+						createDate: date,
+						amount: amount
+				}
+				var options = {
+						data: JSON.stringify(data),
+						type: 'POST',
+						url: 'http://127.0.0.1:8080/march-platform/rest/restful/demo/add',
+						contentType: "application/json; charset=utf-8",
+						dataType: 'JSON',
+						success: function(res) {
+							alert(res.status);
+						},
+						error: function(e) {
+							alert('error!');
+						}
+				}
+				$.ajax(options);
+			});
+			
+		});
+	</script>
+	
+	<div id="save">
+		<label for="name">Demo Name:</label>
+		<input id="name" type="text" placeholder="please input a name"/>
+		<br/>
+		<br/>
+		<label for="amount">Demo amount:</label>
+		<input id="amount" type="text" placeholder="please input a float number" accept=""/>
+		<br/>
+		<br/>
+		<label for="createDate">Demo creation date:</label>
+		<input id="createDate" type="date" />
+		<br/>
+		<br/>	
+		<button id="saveButton">SAVE</button>
+	</div>
+	
+</body>
+</html>

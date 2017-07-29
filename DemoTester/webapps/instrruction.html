@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script src="../lib/jquery.js" ></script>
+</head>
+<body>
+	<script type="text/javascript">
+		function showInstruction(fileName) {
+			var content = "";
+			switch (fileName) {
+			case 'getAllOrDeleteTester.html':
+				content = "Get all data that you saved by the function 'Save New Data'. You can also remove them one by one.";
+				break;
+			case 'getOneOrUpdateTester.html':
+				content = "First you can get data by ID number that you already know, then update or do nothing.";
+				break;
+			case 'saveNewDataTester.html':
+				content = "Save new data for the following tests.";
+				break;
+			case 'fileUploadAndDownload.html':
+				content = "Upload file and then remove file.";
+				break;
+			default: break;
+			}
+			var hContainer = $('<h4>');
+			hContainer.html(content);
+			$('#instructionContent').html(hContainer);
+		}
+	</script>
+	<div id="instructionContent" style="text-align: center; width: 800px; height:800px"></div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../lib/jquery.js" ></script>
+<script src="../lib/jquery.form.js" /></script>
+</head>
+<body>
+	<script type="text/javascript">
+		
+		$(document).ready(function(){
+			
+			$("#getButton").on('click',function(){
+				$('#result').html('');
+				var options = {
+						type: 'GET',
+						url: 'http://127.0.0.1:8080/march-platform/rest/restful/demo/getAll',
+						contentType: "application/json; charset=utf-8",
+						success: function(res) {
+							if (res.length > 0) {
+								var table = $('<table>');
+								table.attr('id','dataTable');
+								$(res).each(function(){
+									var date = new Date();
+									date.setTime(this.createDate);
+									var month = date.getMonth() + 1;
+									if (month < 10) {
+										month = "0" + month;
+									}
+									var day = date.getDate();
+									if (day < 10) {
+										day = "0" + day;
+									}
+									var dateString = date.getFullYear() + "-" + month + "-" + day;
+									
+									var row = $('<tr id="' + this.id + '">');
+									table.append(row);
+									var checkColumn = $('<td>');
+									var radio = $('<input type="radio" name="selectRadio">');
+									checkColumn.html(radio);
+									var column = $('<td>');
+									row.html(checkColumn);
+									row.append(column);
+									column.html("ID: " + this.id + "; name: " + this.demoName + "; amout: " + this.amount + "; date: " + dateString);
+								});
+								$('#result').html(table);
+								$('#deleteButton').removeAttr('disabled');
+							} else {
+								alert("No data found!");
+							}
+						},
+						error: function(e) {
+							alert("error!");
+						}
+				}
+				$.ajax(options);
+			});
+			
+			$('#deleteButton').on('click', function() {
+				if ($('input[type="radio"]:checked').length === 0) {
+					alert('Please choose what you wanna delete.');
+					return;
+				}
+				var id = $('#dataTable').find('input[type="radio"]:checked').parent().parent().attr('id');
+				var row = $('#' + id);
+				var options = {
+						type: 'DELETE',
+						url: 'http://127.0.0.1:8080/march-platform/rest/restful/demo/delete/' + id,
+						contentType: "application/json; charset=utf-8",
+						success: function(res) {
+							if (res.status == 'OK') {
+								row.remove();
+							}
+							alert(res.status);
+						},
+						error: function(e) {
+							alert("error!");
+						}
+				}
+				$.ajax(options);
+			});
+			
+		});
+	
+	</script>
+	
+	<div id="getAll">
+		<button id="getButton">GET</button>
+	</div>
+	<br/>
+	<br/>
+	<h4>RESULT:</h4>
+	<div id="result">
+	</div>
+	<div>
+		<br/>
+		<br/>
+		<button id="deleteButton" disabled="disabled">DELETE</button>
+	</div>
+</body>
+</html>

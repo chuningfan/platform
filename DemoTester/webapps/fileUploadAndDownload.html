@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../lib/jquery.js" ></script>
+<script src="../lib/jquery.form.js" /></script>
+</head>
+<body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#upload').on('click', function() {
+			if ($('#fileContainer').val() === '') {
+				alert('Please choose a file!');
+				return;
+			}
+			var options = {
+				dataType: 'JSON',
+				success: function(result) {
+					alert(result.status);
+				},
+				error: function(e) {
+					alert('error!');
+				}
+			};
+			$('#uploadForm').ajaxSubmit(options);
+		});
+		
+		$('#getFiles').on('click', function() {
+			var options = {
+					type: 'GET',
+					dataType: 'JSON',
+					url: 'http://127.0.0.1:8080/march-platform/rest/restful/demo/getFiles',
+					success: function(data) {
+						if (data.length > 0) {
+							var table = $('<table>');
+							var header = $('<tr>');
+							var col_name = $('<td>');
+							var col_download = $('<td>');
+							var col_remove = $('<td>');
+							header.append(col_name).append(col_download).append(col_remove);
+							$(data).each(function() {
+								var fileName = this.fileName;
+								var fullPath = this.fullPath;
+								var fileName = fullPath.substr(fullPath.lastIndexOf('/') + 1);
+								var row = $('<tr data-path="' + fullPath + '">');
+								var _name = $('<td>' + fileName + '</td>');
+								var _download = $('<td><a data-path="' + fullPath + '" href="http://127.0.0.1:8080/march-platform/download.do?fileName=' + fileName + '">DOWNLOAD</a></td>');
+								var _remove = $('<td><a class="removeLink" data-path="' + fullPath + '" href="#" onclick="removeFile(this);">REMOVE</a></td>');
+								row.append(_name).append(_download).append(_remove);
+								table.append(row);
+							});
+							$('#filesDiv').html(table);
+						}
+						
+					},
+					error: function(e) {
+						alert('error!');
+					}
+			};
+			$.ajax(options);
+		});
+	});
+	var removeFile = function(target) {
+		var path = $(target).attr('data-path');
+		var fileName = path.substr(path.lastIndexOf('/') + 1);
+		var options = {
+			dataType: 'JSON',
+			url: 'http://127.0.0.1:8080/march-platform/rest/restful/demo/deleteFile/' + fileName,
+			type: 'DELETE',
+			success: function(result) {
+				if (result.status === 'OK') {
+					$(target).parent().parent().remove();
+				}
+				alert(result.status);
+			},
+			error: function(e) {
+				alert('error!');
+			}
+		};
+		$.ajax(options);
+	}
+	
+</script>
+	<form id="uploadForm" action="http://127.0.0.1:8080/march-platform/rest/restful/demo/fileUpload" method="post" enctype="multipart/form-data">  
+        <label for="fileContainer">Files:</label>
+        <input id="fileContainer" type="file" name="file" multiple="multiple"/></p>  
+    </form>
+	<button id="upload">UPLOAD</button>
+	<br/>
+	<br/>
+	<button id="getFiles">GET FILES</button>
+	<br/>
+	<br/>
+	<div id="filesDiv"></div>
+</body>
+</html>

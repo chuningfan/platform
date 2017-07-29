@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../lib/jquery.js" ></script>
+<script src="../lib/jquery.form.js" /></script>
+</head>
+<body>
+	<script type="text/javascript">
+		
+		$(document).ready(function(){
+			
+			$("#getButton").on('click',function(){
+				var id = $('#getId').val();
+				if (!id) {
+					id = 1;
+				}
+				$('#result').html('');
+				var options = {
+						type: 'GET',
+						url: 'http://127.0.0.1:8080/march-platform/rest/restful/demo/get/' + id,
+						contentType: "application/json; charset=utf-8",
+						success: function(res) {
+							if (!res.id) {
+								alert("No data found!");
+								return;
+							}
+							var date = new Date();
+							date.setTime(res.createDate);
+							var month = date.getMonth() + 1;
+							if (month < 10) {
+								month = "0" + month;
+							}
+							var day = date.getDate();
+							if (day < 10) {
+								day = "0" + day;
+							}
+							var dateString = date.getFullYear() + "-" + month + "-" + day;
+							setValue('updateId',res.id);
+							setValue('name',res.demoName);
+							setValue('amount',res.amount);
+							setValue('createDate',dateString);
+							var table = $('<table>');
+							$(res.numbers).each(function(){
+								var row = $('<tr>');
+								table.append(row);
+								var column = $('<td>');
+								row.html(column);
+								column.html(this);
+							});
+							$('#result').append(table);
+						},
+						error: function(e) {
+							alert("error!");
+						}
+				}
+				$.ajax(options);
+			});
+			
+			
+			var setValue = function(key, value) {
+				$("#" + key).val(value);
+			}
+			
+			
+			//--update
+			
+			$("#updateButton").on('click',function(){
+				var id = $("#updateId").val();
+				var name = $("#name").val();
+				var amount = $("#amount").val();
+				var date = $("#createDate").val();
+				
+				var data = {
+						id: id,
+						demoName: name,
+						createDate: date,
+						amount: amount
+				}
+				var options = {
+						data: JSON.stringify(data),
+						type: 'PUT',
+						url: 'http://127.0.0.1:8080/march-platform/rest/restful/demo/update',
+						contentType: "application/json; charset=utf-8",
+						dataType: 'JSON',
+						success: function(res) {
+							alert(res.status);
+						},
+						error: function(e) {
+							alert('error!');
+						}
+				}
+				$.ajax(options);
+			});
+		});
+	
+	</script>
+	
+	<div id="getOne">
+		<label for="getId">ID:</label>
+		<input id="getId" type="text" />
+		<button id="getButton">GET</button>
+	</div>
+	<br/>
+	<br/>
+	<h4>RESULT:</h4>
+	<div id="UpdateOne">
+		<label for="updateId">target ID:</label>
+		<input id="updateId" type="text" disabled="disabled"/>
+		<br/>
+		<br/>
+		<label for="name">Demo Name:</label>
+		<input id="name" type="text"/>
+		<br/>
+		<br/>
+		<label for="amount">Demo amount:</label>
+		<input id="amount" type="text"/>
+		<br/>
+		<br/>
+		<label for="createDate">Demo creation date:</label>
+		<input id="createDate" type="date" />
+		<br/>
+		<br/>
+		<button id="updateButton">UPDATE</button>
+	</div>
+	<h4>SEQUENCE:</h4>
+	<div id="result">
+	</div>
+</body>
+</html>
