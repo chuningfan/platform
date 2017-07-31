@@ -1,8 +1,5 @@
 package org.march.platform.dto;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "fileDemo") 
 public class FileDemoDto {
 	
 	private String fileName;

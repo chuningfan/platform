@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.march.platform.entity.Demo;
 
-@XmlRootElement(name = "demo") 
 public class DemoDto {
 	
 	private Long id;
