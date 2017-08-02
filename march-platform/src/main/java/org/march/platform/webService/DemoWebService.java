@@ -24,6 +24,7 @@ import org.march.platform.common.MarchResponse;
 import org.march.platform.common.ResponseStatus;
 import org.march.platform.common.Utils;
 import org.march.platform.dto.DemoDto;
+import org.march.platform.dto.DemoRequestDto;
 import org.march.platform.dto.FileDemoDto;
 import org.march.platform.entity.Demo;
 import org.march.platform.service.DemoService;
@@ -154,6 +155,15 @@ public class DemoWebService {
 			status = ResponseStatus.FAIL;
 		}
 		return MarchResponse.result(status);
+	}
+	
+	@POST
+	@Path("/getPaginationList")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<DemoDto> getPaginationList(DemoRequestDto demoRequestDto) {
+		List<DemoDto> resultList = demoService.getListByPagination(demoRequestDto);
+		return resultList;
 	}
 	
 }
