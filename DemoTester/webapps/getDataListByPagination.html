@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../lib/jquery.js" ></script>
+</head>
+<body>
+	<script type="text/javascript">
+		var query = function (source) {
+			var sourceId = source.id
+			var originalPageIndex = Number($('#pageIndex').val());
+			if ("forwardButton" === sourceId) {
+				$('#pageIndex').val(originalPageIndex + 1);
+			} else {
+				var originalPageIndex = $('#pageIndex').val();
+				if (originalPageIndex == 1) {
+					alert('You are in the beginning of the grid!');
+					return;
+				}
+				$('#pageIndex').val(originalPageIndex - 1);
+			}
+			var pagination =
+					{
+						pageSize: Number($('#pageSize').val()),
+						index: Number($('#pageIndex').val())
+					}
+			var options = {
+					type: 'POST',
+					dataType: 'JSON',
+					url: 'http://127.0.0.1:8080/march-platform/rest/restful/demo/getPaginationList',
+					contentType: "application/json; charset=utf-8",
+					data: JSON.stringify({
+						ids: [10,11,12,15],
+						pagination: pagination
+					}),
+					success: function(data) {
+						var table = null;
+						if ($('#dataTable').length === 0) {
+							table = $('<table id="dataTable">');
+						} else {
+							table = $('#dataTable');
+							table.html('');
+						}
+						$(data).each(function() {
+							var row = $('<tr>');
+							var column_id = $('<td>' + this.id + '</td>');
+							var column_name = $('<td>' + this.demoName + '</td>');
+							var column_amount = $('<td>' + this.amount + '</td>');
+							row.append(column_id).append(column_name).append(column_amount);
+							table.append(row);
+						});
+						$('#result').html(table);
+					},
+					error: function(e) {
+						alert('error!');
+					}
+			};
+			$.ajax(options);
+		}	
+	
+	</script>
+	
+	<div id="getAll">
+		<label for="pageSize">data size per page:</label>
+		<input type="text" id="pageSize"/>
+		<input type="text" id="pageIndex" value="0" disabled="disabled" />
+		<button id="forwardButton" onclick="query(this);">nextPage</button>
+		<button id="backwardButton" onclick="query(this);" >privousPage</button>
+	</div>
+	<br/>
+	<br/>
+	<h4>RESULT:</h4>
+	<div id="result">
+	</div>
+</body>
+</html>

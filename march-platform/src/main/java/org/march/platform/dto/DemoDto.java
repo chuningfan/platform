@@ -19,6 +19,11 @@ public class DemoDto {
 	
 	private List<Long> numbers = new ArrayList<>();;
 
+	
+	
+	public DemoDto() {
+	}
+
 	public DemoDto(Demo demo) {
 		if (demo == null) {
 			return;

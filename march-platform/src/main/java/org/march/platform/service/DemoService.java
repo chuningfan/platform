@@ -3,6 +3,7 @@ package org.march.platform.service;
 import java.util.List;
 
 import org.march.platform.dto.DemoDto;
+import org.march.platform.dto.DemoRequestDto;
 import org.march.platform.entity.Demo;
 
 public interface DemoService {
@@ -17,4 +18,5 @@ public interface DemoService {
 	
 	List<DemoDto> getAll();
 	
+	List<DemoDto> getListByPagination(DemoRequestDto demoRequestDto);
 }
